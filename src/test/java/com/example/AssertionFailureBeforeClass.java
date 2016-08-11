@@ -27,11 +27,11 @@ public final class AssertionFailureBeforeClass {
 
 	@Test
 	public void neverRuns0() {
-		// empty
+		assertTrue("This test failure is never reached", false);
 	}
 
 	@Test
 	public void neverRuns1() {
-		// empty
+		assertTrue("This test failure is never reached", false);
 	}
 }

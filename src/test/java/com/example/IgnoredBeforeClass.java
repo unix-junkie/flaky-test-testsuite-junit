@@ -1,5 +1,6 @@
 package com.example;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import org.junit.BeforeClass;
@@ -29,11 +30,11 @@ public final class IgnoredBeforeClass {
 
 	@Test
 	public void neverRuns0() {
-		// empty
+		assertTrue("This test failure is never reached", false);
 	}
 
 	@Test
 	public void neverRuns1() {
-		// empty
+		assertTrue("This test failure is never reached", false);
 	}
 }

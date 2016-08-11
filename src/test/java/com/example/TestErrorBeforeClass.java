@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * <p>Test error in a method annotated with {@link BeforeClass @BeforeClass}.
  * None of the standard tests annotated with {@link Test @Test} are ever run,
@@ -24,11 +26,11 @@ public final class TestErrorBeforeClass {
 
 	@Test
 	public void neverRuns0() {
-		// empty
+		assertTrue("This test failure is never reached", false);
 	}
 
 	@Test
 	public void neverRuns1() {
-		// empty
+		assertTrue("This test failure is never reached", false);
 	}
 }
