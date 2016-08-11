@@ -1,6 +1,3 @@
-/*-
- * $Id$
- */
 package com.example;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;

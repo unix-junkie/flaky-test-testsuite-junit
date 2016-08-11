@@ -1,6 +1,3 @@
-/*-
- * $Id$
- */
 package com.example;
 
 import org.junit.rules.TestRule;
