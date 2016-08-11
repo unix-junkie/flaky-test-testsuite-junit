@@ -12,10 +12,10 @@ import org.junit.runners.JUnit4;
 
 /**
  * <p>Flaky code in a method annotated with {@link BeforeClass @BeforeClass}.
- * Regular tests will only succeed if {@link #tearDownOnce()} completes
- * normally. If, on the other hand, {@link #tearDownOnce()} fails, a separate
+ * Regular tests will only succeed if {@link #setUpOnce()} completes
+ * normally. If, on the other hand, {@link #setUpOnce()} fails, a separate
  * failure will be recorded, but will never be marked as <em>flaky</em> due to
- * zero success rate (successful execution of {@link #tearDownOnce()} is never
+ * zero success rate (successful execution of {@link #setUpOnce()} is never
  * recorded as a passed test invocation).</p>
  *
  * @see AssertionFailureBeforeClass
