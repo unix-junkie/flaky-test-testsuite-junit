@@ -1,8 +1,8 @@
 name: Maven Build
 
 on:
-  pull_request
-  push
+  pull_request:
+  push:
 
 jobs:
   build:
