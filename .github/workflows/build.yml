@@ -57,3 +57,10 @@ jobs:
         with:
           name: JUnit Tests (EnricoMi/publish-unit-test-result-action@v1)
           files: "target/surefire-reports/TEST-*.xml"
+
+      - name: Test Report 3
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          name: JUnit Tests (mikepenz/action-junit-report@v3)
+          report_paths: "target/surefire-reports/TEST-*.xml"
