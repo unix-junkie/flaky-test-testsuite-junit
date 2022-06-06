@@ -34,13 +34,13 @@ jobs:
       - name: mvn test
         if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
         run: |
-          mvn -B -T1C clean test
+          mvn -B -T1C --fail-at-end clean test
         shell: bash
 
       - name: mvn test (Windows)
         if: runner.os == 'Windows'
         run: |
-          mvn -B -T1C clean test
+          mvn -B -T1C --fail-at-end clean test
         shell: cmd
 
       - name: Test Report 1
@@ -59,6 +59,12 @@ jobs:
 
       - name: Test Report 3
         uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          report_paths: "target/surefire-reports/TEST-*.xml"
+
+      - name: Test Report 4
+        uses: scacap/action-surefire-report@v1
         if: always()
         with:
           report_paths: "target/surefire-reports/TEST-*.xml"
