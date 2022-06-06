@@ -13,6 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
+    permissions:
+      checks: write
     steps:
       - uses: actions/checkout@v3
 
@@ -41,10 +43,17 @@ jobs:
           mvn -B -T1C clean test
         shell: cmd
 
-      - name: Test Report
+      - name: Test Report 1
         uses: dorny/test-reporter@v1
-        if: success() || failure()
+        if: always()
         with:
-          name: JUnit Tests
-          path: target/surefire-reports/TEST-*.xml
+          name: JUnit Tests (dorny/test-reporter@v1)
+          path: "target/surefire-reports/TEST-*.xml"
           reporter: java-junit
+
+      - name: Test Report 2
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          name: JUnit Tests (EnricoMi/publish-unit-test-result-action@v1)
+          files: "target/surefire-reports/TEST-*.xml"
