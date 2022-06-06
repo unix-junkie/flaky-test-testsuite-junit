@@ -22,9 +22,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-            restore-keys: |
-              ${{ runner.os }}-maven-
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: mvn test
         if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
