@@ -45,7 +45,7 @@ jobs:
         # This step needs a Git repository, so it's impossible to extract it
         # into a separate job (or, otherwise, we'd need to upload the content
         # of the whole `.git` folder as an artifact).
-      - name: JUnit Tests (dorny/test-reporter@v1, ${{ runner.os }})
+      - name: JUnit Tests (dorny/test-reporter@v1)
         uses: dorny/test-reporter@v1
         if: ${{ always() }}
         with:
@@ -86,7 +86,7 @@ jobs:
           name: xml-test-reports-${{ runner.os }}
 
         # Uses Docker, that's why Linux-only.
-      - name: Unit Test Results (EnricoMi/publish-unit-test-result-action@v1, Linux)
+      - name: JUnit Tests (EnricoMi/publish-unit-test-result-action@v1, Linux)
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: ${{ runner.os == 'Linux' }}
         with:
@@ -95,7 +95,7 @@ jobs:
             **/target/*-reports/TEST-*.xml
             **/build/test-results/*/TEST-*.xml
 
-      - name: Unit Test Results (EnricoMi/publish-unit-test-result-action@v1, Windows or Mac OS X)
+      - name: JUnit Tests (EnricoMi/publish-unit-test-result-action@v1, Windows or Mac OS X)
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
         if: ${{ runner.os == 'Windows' || runner.os == 'macOS' }}
         with:
