@@ -1,0 +1,105 @@
+name: Maven Build
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build_and_test:
+    name: Maven Build
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+          cache: 'maven'
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: mvn test (Linux)
+        if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+        run: |
+          mvn -B -Dstyle.color=always -T1C --fail-at-end clean test
+        shell: bash
+
+      - name: mvn test (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          mvn -B -Dstyle.color=always -T1C --fail-at-end clean test
+        shell: cmd
+
+        # This step needs a Git repository, so it's impossible to extract it
+        # into a separate job (or, otherwise, we'd need to upload the content
+        # of the whole `.git` folder as an artifact).
+      - name: JUnit Tests (dorny/test-reporter@v1)
+        uses: dorny/test-reporter@v1
+        if: ${{ always() }}
+        with:
+          name: JUnit Tests (${{ runner.os }}, dorny/test-reporter@v1)
+          # Comma-separated values.
+          path: "**/target/*-reports/TEST-*.xml, **/build/test-results/*/TEST-*.xml"
+          reporter: java-junit
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: xml-test-reports-${{ runner.os }}
+          path: |
+            **/target/*-reports/TEST-*.xml
+            **/build/test-results/*/TEST-*.xml
+          retention-days: 1
+
+
+  report:
+    name: Publish JUnit test results
+    if: ${{ always() }}
+    needs: build_and_test
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    permissions:
+      checks: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/download-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: xml-test-reports-${{ runner.os }}
+
+        # Uses Docker, that's why Linux-only.
+      - name: JUnit Tests (EnricoMi/publish-unit-test-result-action@v1, Linux)
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          check_name: JUnit Tests (${{ runner.os }}, EnricoMi/publish-unit-test-result-action@v1)
+          files: |
+            **/target/*-reports/TEST-*.xml
+            **/build/test-results/*/TEST-*.xml
+
+      - name: JUnit Tests (EnricoMi/publish-unit-test-result-action@v1, Windows or Mac OS X)
+        uses: EnricoMi/publish-unit-test-result-action/composite@v1
+        if: ${{ runner.os == 'Windows' || runner.os == 'macOS' }}
+        with:
+          check_name: JUnit Tests (${{ runner.os }}, EnricoMi/publish-unit-test-result-action@v1)
+          files: |
+            **/target/*-reports/TEST-*.xml
+            **/build/test-results/*/TEST-*.xml

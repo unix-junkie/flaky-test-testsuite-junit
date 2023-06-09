@@ -8,21 +8,48 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.8.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.18.1</version>
+				<version>3.0.0-M7</version>
+				<dependencies>
+					<dependency>
+						<groupId>me.fabriciorby</groupId>
+						<artifactId>maven-surefire-junit5-tree-reporter</artifactId>
+						<version>1.1.0</version>
+					</dependency>
+				</dependencies>
 				<configuration>
 					<failIfNoTests>true</failIfNoTests>
 					<rerunFailingTestsCount>0</rerunFailingTestsCount>
 					<includes>
 						<include>**/*.java</include>
 					</includes>
+					<statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+						<!-- Prefer @DisplayName & friends, if any. -->
+						<usePhrasedFileName>true</usePhrasedFileName>
+						<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+						<usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+						<usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+					</statelessTestsetReporter>
+					<!-- For the console output, use the tree reporter from
+						 https://github.com/fabriciorby/maven-surefire-junit5-tree-reporter. -->
+					<reportFormat>plain</reportFormat>
+					<consoleOutputReporter>
+						<disable>true</disable>
+					</consoleOutputReporter>
+					<statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter">
+						<!-- Prefer @DisplayName & friends, if any. -->
+						<usePhrasedFileName>true</usePhrasedFileName>
+						<usePhrasedClassNameInRunning>true</usePhrasedClassNameInRunning>
+						<!-- Avoid null's in *.txt summary -->
+						<usePhrasedClassNameInTestCaseSummary>false</usePhrasedClassNameInTestCaseSummary>
+					</statelessTestsetInfoReporter>
 				</configuration>
 			</plugin>
 		</plugins>
